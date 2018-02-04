@@ -9,4 +9,6 @@ exibeMenu():-
 	write('8.Sair'),nl,
 	write('Digite sua opcao: '),nl.
 	
+
+	
 	

@@ -8,6 +8,7 @@ executaMenu():-
 	read(OPCAO),nl,
 	sw(OPCAO).
 	
+	
 %Opcões Menu principal.
 
 sw(1):-
@@ -17,12 +18,15 @@ sw(2):-
 	exibeContatos(L).
 sw(3):-
 	apagaContato().
+sw(4):-
+	read(NOME),nl,
+	buscarContato(NOME,X).
 
 % Adiciona fato contato(NOME,NUMERO) a base de dados
 
 adicionaContato():-
-	write("Nome do Contato: "),read(NOME),nl,
-	write("Numero do Contato: "), read(NUMERO),
+	write("Nome: "),read(NOME),nl,
+	write("Numero: "),read(NUMERO),
 	assertz(contato(NOME,NUMERO)),
 	executaMenu().
 	
@@ -36,12 +40,22 @@ exibeContatos([Head|Tail]):-
 		write('Numero: '),write(Y),nl,nl,
 		exibeContatos(Tail).
 
+% Método para buscar um fato na base de dados.
+
+buscarContato(NOME,NUMERO):-
+    call(contato(NOME,NUMERO)), !,
+    write('Nome:'),write(NOME),nl,
+    write('Numero:'),write(NUMERO),nl;
+    write('O contato não existe!'), fail.
+
 % Método que apaga fato contato(NOME, _) da base de dados.
-% FIXME: Programa quebra se tentar apagar um contato nao existente.
 
 apagaContato():-
-	write("Nome do Contato: "),read(NOME),nl,
-	retract(contato(NOME, X)),
+	write("Nome: "),read(NOME),nl,
+	call(contato(NOME,NUMERO)), !,
+    retract(contato(NOME, X)),
+    executaMenu();
+    write('O contato não existe!'),nl,
 	executaMenu().
 
 main:-
