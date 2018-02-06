@@ -6,7 +6,8 @@ exibeMenu():-
 	write('5.Ordenar '),nl,
 	write('6.Chamar '),nl,
 	write('7.Favoritos'),nl,
-	write('8.Sair'),nl,
+	write('8.Altera contato'),nl,	
+	write('9.Sair'),nl,
 	write('Digite sua opcao: '),nl.
 	
 
