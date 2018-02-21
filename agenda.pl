@@ -1,3 +1,4 @@
+bloqueado(contato(NOME,NUMERO)).
 
 :-[mensagens].
 :- initialization(main).	
@@ -27,7 +28,9 @@ sw(8):-
 	write('Digite o nome do contato que deseja alterar: '),
 	read(NOMEANTIGO),nl,
 	alteraContato(NOMEANTIGO,X).
-sw(9):- 
+sw(9):-
+	bloqueiaContato().
+sw(10):-
 	write('Lista telefônica encerrada!'),nl,
 	halt(0).
 
@@ -79,9 +82,6 @@ alteraContato(NOMEANTIGO,NUMEROANTIGO):-
 	read(OP),nl,
 	write("falta implementar"),
 	subMenuAlteraContato(OP).
-    
-
-	
 	
 subMenuAlteraContato(1):- 
 	write("Falta implementar").
@@ -93,9 +93,23 @@ subMenuAlteraContato(3):-
 	write("Falta implementar").	
 
 	
+%------------Bloqueia contato-----------------------------------------------------
 
+bloqueiaContato():-
+	write("Nome: "), read(NOME), nl,
+	call(contato(NOME,NUMERO)), !,
+	assertz(bloqueado(contato(NOME, X))),
+	executaMenu();
+	write("Contato não existe!"), nl,
+	executaMenu().
 
-
+listaContatosBloqueados([]):-
+	executaMenu().
+listaContatosBloqueados([Head|Tail]):-
+	write("Nome: "),write(Head),nl,
+	contato(Head, Y),
+	write("Numero: "),write(Y),nl,
+	listaContatosBloqueados(Tail).
 
 
 main:-
