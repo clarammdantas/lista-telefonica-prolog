@@ -4,7 +4,7 @@ bloqueado(NOME):-contato(NOME,_)
 :-[mensagens].
 :- initialization(main).	
 
-%Menu principal.
+%---------------Menu principal.
 
 executaMenu():-
 	exibeMenu(),
