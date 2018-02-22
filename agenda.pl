@@ -1,4 +1,5 @@
 
+
 bloqueado(NOME):-contato(NOME,_)
 
 :-[mensagens].
@@ -32,9 +33,11 @@ sw(8):-
 sw(9):-
 	bloqueiaContato().
 sw(10):-
+
 	findall(X, (bloqueado(X)),L),
 	listaContatosBloqueados(L).
 sw(11):-
+
 	write('Lista telefônica encerrada!'),nl,
 	halt(0).
 
