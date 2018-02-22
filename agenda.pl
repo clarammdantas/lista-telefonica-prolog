@@ -27,6 +27,10 @@ sw(4):-
 	write('Digite o nome do contato: '),
 	read(NOME),nl,
 	buscarContato(NOME,_).
+sw(5):-
+	findall(X, (contato(X,_)),L),
+	sort(L,O),
+	exibeContatos(O).	
 sw(8):-
 	write('Digite o nome do contato que deseja alterar: '),
 	read(NOMEANTIGO),nl,
