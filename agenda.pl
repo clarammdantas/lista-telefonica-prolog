@@ -49,6 +49,7 @@ sw(9):-
 
 sw(10):-
 	write("Nome: "), read(NOME), nl,
+	verificaContato(NOME),
 	desbloquearContato(NOME).
 
 sw(11):-
@@ -171,7 +172,7 @@ desbloquearContato(NOME):-
 	retract(contato(NOME,X)),
 	retract(bloqueado(contato(NOME,X))),
 	assertz(contato(NOME,X)),
-	write("Contato desbloqueado!"),
+	write("Contato desbloqueado!"),nl,
 	executaMenu(), nl;
 
 	write("Contato já é desbloqueado!"), nl,
