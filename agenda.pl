@@ -1,5 +1,6 @@
 :- dynamic
 	bloqueado(contado(_,_)),
+	desbloqueado(contato(_,_)),
 	contato(_,_).
 
 :-[mensagens].
@@ -96,6 +97,7 @@ apagaContato():-
 
 	write('O contato não existe!'),nl,
 	executaMenu().
+
 apagaBloqueado(NOME):-
 	call(bloqueado(contato(NOME,_))), !,
 	retract(bloqueado(contato(NOME, _))),
@@ -149,7 +151,7 @@ bloqueiaContato(NOME):-
 	executaMenu().
 
 
-%---------Listar contatos-----------------------------------------------------------
+%---------Listar contatos bloqueados----------------------------------------
 
 listaContatosBloqueados([]):-
 	executaMenu().
@@ -157,6 +159,17 @@ listaContatosBloqueados([contato(X,Y)|Tail]):-
 	write("Nome: "),write(X),nl,
 	write("Numero: "),write(Y),nl,
 	listaContatosBloqueados(Tail).
+
+
+%--------Desbloquear contato-------------------------------------------------
+
+desbloquearContato(NOME):-
+	bloqueado(contato(NOME,_)),
+	apagaBloqueado(NOME),
+	adicionaContato();
+
+	write("Contato já é desbloqueado!"), nl,
+	executaMenu().
 
 main:-
 executaMenu(),
