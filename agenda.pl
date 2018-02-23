@@ -1,6 +1,5 @@
 :- dynamic
 	bloqueado(contado(_,_)),
-	desbloqueado(contato(_,_)),
 	contato(_,_).
 
 :-[mensagens].
@@ -17,7 +16,9 @@ executaMenu():-
 %--------------Opcões Menu principal.------------
 
 sw(1):-
-    adicionaContato().
+	write("Nome: "),read(NOME),nl,
+	write("Numero: "),read(NUMERO),
+    adicionaContato(NOME,NUMERO).
 
 sw(2):-
 	findall(X, (contato(X,_)),L),
@@ -47,10 +48,14 @@ sw(9):-
 	bloqueiaContato(NOME).
 
 sw(10):-
+	write("Nome: "), read(NOME), nl,
+	desbloquearContato(NOME).
+
+sw(11):-
 	findall(X, (bloqueado(X)),L),
 	listaContatosBloqueados(L).
 
-sw(11):-
+sw(12):-
 	write('Lista telefônica encerrada!'),nl,
 	halt(0).
 
@@ -60,9 +65,7 @@ sw(_):-
 
 % --------------Adiciona fato contato(NOME,NUMERO) a base de dados----------------
 
-adicionaContato():-
-	write("Nome: "),read(NOME),nl,
-	write("Numero: "),read(NUMERO),
+adicionaContato(NOME,NUMERO):-
 	assertz(contato(NOME,NUMERO)),
 	write("Contato adicionado com sucesso!"),nl,
 	executaMenu().
@@ -102,7 +105,7 @@ apagaBloqueado(NOME):-
 	call(bloqueado(contato(NOME,_))), !,
 	retract(bloqueado(contato(NOME, _))),
 	retract(contato(NOME, _)),
-	write("Contato apagado com sucesso!"),nl,
+	write("Contato apagado com sucesso!"),
 	executaMenu();
 
 	retract(contato(NOME, _)),
@@ -164,9 +167,12 @@ listaContatosBloqueados([contato(X,Y)|Tail]):-
 %--------Desbloquear contato-------------------------------------------------
 
 desbloquearContato(NOME):-
-	bloqueado(contato(NOME,_)),
-	apagaBloqueado(NOME),
-	adicionaContato();
+	call(bloqueado(contato(NOME,X))), !,
+	retract(contato(NOME,X)),
+	retract(bloqueado(contato(NOME,X))),
+	assertz(contato(NOME,X)),
+	write("Contato desbloqueado!"),
+	executaMenu(), nl;
 
 	write("Contato já é desbloqueado!"), nl,
 	executaMenu().
