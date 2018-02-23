@@ -1,4 +1,3 @@
-
 :- dynamic
 	bloqueado(contado(_,_)),
 	contato(_,_).
@@ -18,35 +17,44 @@ executaMenu():-
 
 sw(1):-
     adicionaContato().
+
 sw(2):-
 	findall(X, (contato(X,_)),L),
 	exibeContatos(L).
+
 sw(3):-
 	apagaContato().
+
 sw(4):-
 	write('Digite o nome do contato: '),
 	read(NOME),nl,
 	buscarContato(NOME,_).
+
 sw(5):-
 	findall(X, (contato(X,_)),L),
 	sort(L,O),
-	exibeContatos(O).	
+	exibeContatos(O).
+
 sw(8):-
 	write('Digite o nome do contato que deseja alterar: '),
 	read(NOMEANTIGO),nl,
 	alteraContato(NOMEANTIGO,_).
+
 sw(9):-
 	verificaContato().
-sw(10):-
 
+sw(10):-
 	findall(X, (bloqueado(X)),L),
 	listaContatosBloqueados(L).
+
 sw(11):-
 	write('Lista telefônica encerrada!'),nl,
 	halt(0).
+
 sw(_):- 
 	write('Opção invalida,tente novamente!'),nl,
 	executaMenu().
+	
 % --------------Adiciona fato contato(NOME,NUMERO) a base de dados----------------
 
 adicionaContato():-
