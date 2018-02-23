@@ -41,7 +41,9 @@ sw(8):-
 	alteraContato(NOMEANTIGO,_).
 
 sw(9):-
-	verificaContato().
+	write("Nome: "), read(NOME), nl,
+	verificaContato(NOME),
+	bloqueiaContato(NOME).
 
 sw(10):-
 	findall(X, (bloqueado(X)),L),
@@ -54,7 +56,7 @@ sw(11):-
 sw(_):- 
 	write('Opção invalida,tente novamente!'),nl,
 	executaMenu().
-	
+
 % --------------Adiciona fato contato(NOME,NUMERO) a base de dados----------------
 
 adicionaContato():-
@@ -71,6 +73,7 @@ exibeContatos([]):-
 exibeContatos([Head|Tail]):-
 	call(bloqueado(contato(Head,_))), !,
 	exibeContatos(Tail);
+
 	write('Nome: '),write(Head),nl,
 	contato(Head,Y),
 	write('Numero: '),write(Y),nl,nl,
@@ -90,6 +93,7 @@ apagaContato():-
 	write("Nome: "),read(NOME),nl,
 	call(contato(NOME,_)), !,
 	apagaBloqueado(NOME);
+
 	write('O contato não existe!'),nl,
 	executaMenu().
 apagaBloqueado(NOME):-
@@ -98,6 +102,7 @@ apagaBloqueado(NOME):-
 	retract(contato(NOME, _)),
 	write("Contato apagado com sucesso!"),nl,
 	executaMenu();
+
 	retract(contato(NOME, _)),
 	write("Contato apagado com sucesso!"),nl,
 	executaMenu().
@@ -127,12 +132,9 @@ subMenuAlteraContato(3):-
 	
 %------------Bloqueia contato-----------------------------------------------------
 
-verificaContato():-
-	write("Nome: "), read(NOME), nl,
-	call(contato(NOME,_)), !,
-	bloqueiaContato(NOME),
-	
-	executaMenu();
+verificaContato(NOME):-
+	call(contato(NOME,_)), !;
+
 	write("Contato nao existe!"), nl,
 	executaMenu().
 
@@ -140,10 +142,14 @@ bloqueiaContato(NOME):-
 	call(bloqueado(contato(NOME,_))), !,
 	write("Contato já está bloqueado!"), nl,
 	executaMenu();
+
 	contato(NOME,X),
 	assertz(bloqueado(contato(NOME,X))),
 	write("Contato bloqueado com sucesso!"),nl,
 	executaMenu().
+
+
+%---------Listar contatos-----------------------------------------------------------
 
 listaContatosBloqueados([]):-
 	executaMenu().
@@ -151,7 +157,6 @@ listaContatosBloqueados([contato(X,Y)|Tail]):-
 	write("Nome: "),write(X),nl,
 	write("Numero: "),write(Y),nl,
 	listaContatosBloqueados(Tail).
-
 
 main:-
 executaMenu(),
