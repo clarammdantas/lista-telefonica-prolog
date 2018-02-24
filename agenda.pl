@@ -1,5 +1,6 @@
 :- dynamic
-	bloqueado(contado(_,_)),
+	favorito(contato(_,_)),
+	bloqueado(contato(_,_)),
 	contato(_,_).
 
 :-[mensagens].
@@ -45,6 +46,11 @@ sw(5):-
 	sort(L,O),
 	exibeContatos(O).
 
+sw(7):-
+	write("Nome: "), read(NOME), nl,
+	verificaContato(NOME),
+	adicionarAosFavoritos(NOME).
+
 sw(8):-
 	write('Digite o nome do contato que deseja alterar: '),
 	read(NOMEANTIGO),nl,
@@ -62,9 +68,16 @@ sw(10):-
 
 sw(11):-
 	findall(X, (bloqueado(X)),L),
-	listaContatosBloqueados(L).
+	listarContatos(L).
 
 sw(12):-
+	findall(X, (favorito(X)), L),
+	listarContatos(L).
+sw(13):-
+	write("Nome: "), read(NOME), nl,
+	verificaContato(NOME),
+	removerFavorito(NOME).
+sw(14):-
 	write('Lista telefônica encerrada!'),nl,
 	halt(0).
 
@@ -105,6 +118,10 @@ apagaContato(NOME):-
 	retract(bloqueado(contato(NOME,_))),
 	retract(contato(NOME,_));
 
+	favorito(contato(NOME,_)),
+	retract(favorito(contato(NOME,_))),
+	retract(contato(NOME,_));
+
 	retract(contato(NOME,_)).
 	
 
@@ -130,13 +147,38 @@ subMenuAlteraContato(3):-
 	write("Falta implementar").	
 
 	
-%------------Bloqueia contato-----------------------------------------------------
+
+%------------Utils-----------------------------------------------------
 
 verificaContato(NOME):-
 	call(contato(NOME,_)), !;
 
 	write("Contato nao existe!"), nl,nl,
 	executaMenu().
+
+%------------Adicionar um contato aos favoritos-----------------------------------------------------
+adicionarAosFavoritos(NOME):-
+	call(favorito(contato(NOME,_))), !,
+	write("Contato já está na sua lista de favoritos :)"), nl,nl,
+	executaMenu;
+
+	contato(NOME,X),
+	assertz(favorito(contato(NOME,X))),
+	write("Contato adicionado aos favoritos com sucesso!"),nl,nl,
+	executaMenu().
+
+
+%------------Remover um contato da lista de favoritos-----------------------------------------------------
+removerFavorito(NOME):-
+	call(favorito(contato(NOME,X))), !,
+	apagaContato(NOME),
+	adicionaContato(NOME, X),
+	write("Contato removido da lista de favoritos!"),nl,nl,
+	executaMenu(), nl;
+
+	write("Esse contato não está na sua lista de favoritos atualmente."),
+	executaMenu().
+%------------Bloqueia contato-----------------------------------------------------
 
 bloqueiaContato(NOME):-
 	call(bloqueado(contato(NOME,_))), !,
@@ -149,14 +191,14 @@ bloqueiaContato(NOME):-
 	executaMenu().
 
 
-%---------Listar contatos bloqueados----------------------------------------
+%---------Printa uma lista de contatos----------------------------------------
 
-listaContatosBloqueados([]):-
+listarContatos([]):-
 	executaMenu().
-listaContatosBloqueados([contato(X,Y)|Tail]):-
+listarContatos([contato(X,Y)|Tail]):-
 	write("Nome: "),write(X),nl,
 	write("Numero: "),write(Y),nl,
-	listaContatosBloqueados(Tail).
+	listarContatos(Tail).
 
 
 %--------Desbloquear contato-------------------------------------------------

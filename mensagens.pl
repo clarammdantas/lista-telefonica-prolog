@@ -5,14 +5,13 @@ exibeMenu():-
 	write('4.Buscar contato'),nl,
 	write('5.Ordenar '),nl,
 	write('6.Chamar '),nl,
-	write('7.Favoritos'),nl,
+	write('7.Adicionar favorito'),nl,
 	write('8.Altera contato'),nl,
 	write('9.Bloquear contato'),nl,
 	write('10.Desbloquear contato'), nl,
-	write('11.Lista contatos bloqueados'),nl,
-	write('12.Sair'),nl,
+	write('11.Listar contatos bloqueados'),nl,
+	write('12.Listar favoritos'),nl,
+	write('13.Remover favorito'),nl,
+	write('14.Sair'),nl,
 	write('Digite sua opcao: '),nl.
-	
-
-	
 	
