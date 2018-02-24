@@ -68,9 +68,12 @@ sw(10):-
 
 sw(11):-
 	findall(X, (bloqueado(X)),L),
-	listaContatosBloqueados(L).
+	listarContatos(L).
 
 sw(12):-
+	findall(X, (favorito(X)), L),
+	listarContatos(L).
+sw(13):-
 	write('Lista telefônica encerrada!'),nl,
 	halt(0).
 
@@ -172,14 +175,14 @@ bloqueiaContato(NOME):-
 	executaMenu().
 
 
-%---------Listar contatos bloqueados----------------------------------------
+%---------Printa uma lista de contatos----------------------------------------
 
-listaContatosBloqueados([]):-
+listarContatos([]):-
 	executaMenu().
-listaContatosBloqueados([contato(X,Y)|Tail]):-
+listarContatos([contato(X,Y)|Tail]):-
 	write("Nome: "),write(X),nl,
 	write("Numero: "),write(Y),nl,
-	listaContatosBloqueados(Tail).
+	listarContatos(Tail).
 
 
 %--------Desbloquear contato-------------------------------------------------

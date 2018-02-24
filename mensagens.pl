@@ -9,8 +9,9 @@ exibeMenu():-
 	write('8.Altera contato'),nl,
 	write('9.Bloquear contato'),nl,
 	write('10.Desbloquear contato'), nl,
-	write('11.Lista contatos bloqueados'),nl,
-	write('12.Sair'),nl,
+	write('11.Listar contatos bloqueados'),nl,
+	write('12.Listar favoritos'),nl,
+	write('13.Sair'),nl,
 	write('Digite sua opcao: '),nl.
 	
 
