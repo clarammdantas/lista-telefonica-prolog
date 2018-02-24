@@ -18,14 +18,22 @@ executaMenu():-
 sw(1):-
 	write("Nome: "),read(NOME),nl,
 	write("Numero: "),read(NUMERO),
-    adicionaContato(NOME,NUMERO).
+    adicionaContato(NOME,NUMERO),
+    write("Contato adicionado com sucesso!"),nl, nl,
+
+	executaMenu().
 
 sw(2):-
 	findall(X, (contato(X,_)),L),
 	exibeContatos(L).
 
 sw(3):-
-	apagaContato().
+	write("Nome: "),read(NOME),nl,
+	verificaContato(NOME), %se o contato nao existe, executa menu de novo
+	apagaContato(NOME),
+
+	write("Contato apagado com sucesso!"), nl, nl,
+	executaMenu().
 
 sw(4):-
 	write('Digite o nome do contato: '),
@@ -67,9 +75,7 @@ sw(_):-
 % --------------Adiciona fato contato(NOME,NUMERO) a base de dados----------------
 
 adicionaContato(NOME,NUMERO):-
-	assertz(contato(NOME,NUMERO)),
-	write("Contato adicionado com sucesso!"),nl,
-	executaMenu().
+	assertz(contato(NOME,NUMERO)).
 	
 % -------------Método que imprime os contatos e seus respctivos números.-------------
 
@@ -94,24 +100,12 @@ buscarContato(NOME,NUMERO):-
 
 % ------------Método que apaga fato contato(NOME, _) da base de dados.------------
 
-apagaContato():-
-	write("Nome: "),read(NOME),nl,
-	call(contato(NOME,_)), !,
-	apagaBloqueado(NOME);
+apagaContato(NOME):-
+	bloqueado(contato(NOME,_)),
+	retract(bloqueado(contato(NOME,_))),
+	retract(contato(NOME,_));
 
-	write('O contato não existe!'),nl,
-	executaMenu().
-
-apagaBloqueado(NOME):-
-	call(bloqueado(contato(NOME,_))), !,
-	retract(bloqueado(contato(NOME, _))),
-	retract(contato(NOME, _)),
-	write("Contato apagado com sucesso!"),
-	executaMenu();
-
-	retract(contato(NOME, _)),
-	write("Contato apagado com sucesso!"),nl,
-	executaMenu().
+	retract(contato(NOME,_)).
 	
 
 %-------------Método que altera o fato contato da base de dados ------------------
@@ -141,17 +135,17 @@ subMenuAlteraContato(3):-
 verificaContato(NOME):-
 	call(contato(NOME,_)), !;
 
-	write("Contato nao existe!"), nl,
+	write("Contato nao existe!"), nl,nl,
 	executaMenu().
 
 bloqueiaContato(NOME):-
 	call(bloqueado(contato(NOME,_))), !,
-	write("Contato já está bloqueado!"), nl,
+	write("Contato já está bloqueado!"), nl,nl,
 	executaMenu();
 
 	contato(NOME,X),
 	assertz(bloqueado(contato(NOME,X))),
-	write("Contato bloqueado com sucesso!"),nl,
+	write("Contato bloqueado com sucesso!"),nl,nl,
 	executaMenu().
 
 
@@ -169,13 +163,12 @@ listaContatosBloqueados([contato(X,Y)|Tail]):-
 
 desbloquearContato(NOME):-
 	call(bloqueado(contato(NOME,X))), !,
-	retract(contato(NOME,X)),
-	retract(bloqueado(contato(NOME,X))),
-	assertz(contato(NOME,X)),
-	write("Contato desbloqueado!"),nl,
+	apagaContato(NOME),
+	adicionaContato(NOME,X),
+	write("Contato desbloqueado!"), nl, nl,
 	executaMenu(), nl;
 
-	write("Contato já é desbloqueado!"), nl,
+	write("Contato já é desbloqueado!"), nl, nl,
 	executaMenu().
 
 main:-
