@@ -74,6 +74,10 @@ sw(12):-
 	findall(X, (favorito(X)), L),
 	listarContatos(L).
 sw(13):-
+	write("Nome: "), read(NOME), nl,
+	verificaContato(NOME),
+	removerFavorito(NOME).
+sw(14):-
 	write('Lista telefônica encerrada!'),nl,
 	halt(0).
 
@@ -114,6 +118,10 @@ apagaContato(NOME):-
 	retract(bloqueado(contato(NOME,_))),
 	retract(contato(NOME,_));
 
+	favorito(contato(NOME,_)),
+	retract(favorito(contato(NOME,_))),
+	retract(contato(NOME,_));
+
 	retract(contato(NOME,_)).
 	
 
@@ -148,7 +156,7 @@ verificaContato(NOME):-
 	write("Contato nao existe!"), nl,nl,
 	executaMenu().
 
-%------------Favoritos-----------------------------------------------------
+%------------Adicionar um contato aos favoritos-----------------------------------------------------
 adicionarAosFavoritos(NOME):-
 	call(favorito(contato(NOME,_))), !,
 	write("Contato já está na sua lista de favoritos :)"), nl,nl,
@@ -160,8 +168,16 @@ adicionarAosFavoritos(NOME):-
 	executaMenu().
 
 
-%------------Listar Favoritos-----------------------------------------------------
+%------------Remover um contato da lista de favoritos-----------------------------------------------------
+removerFavorito(NOME):-
+	call(favorito(contato(NOME,X))), !,
+	apagaContato(NOME),
+	adicionaContato(NOME, X),
+	write("Contato removido da lista de favoritos!"),nl,nl,
+	executaMenu(), nl;
 
+	write("Esse contato não está na sua lista de favoritos atualmente."),
+	executaMenu().
 %------------Bloqueia contato-----------------------------------------------------
 
 bloqueiaContato(NOME):-
