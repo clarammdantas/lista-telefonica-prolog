@@ -1,5 +1,6 @@
 :- dynamic
-	bloqueado(contado(_,_)),
+	favorito(contato(_,_)),
+	bloqueado(contato(_,_)),
 	contato(_,_).
 
 :-[mensagens].
@@ -44,6 +45,11 @@ sw(5):-
 	findall(X, (contato(X,_)),L),
 	sort(L,O),
 	exibeContatos(O).
+
+sw(7):-
+	write("Nome: "), read(NOME), nl,
+	verificaContato(NOME),
+	adicionarAosFavoritos(NOME).
 
 sw(8):-
 	write('Digite o nome do contato que deseja alterar: '),
@@ -130,13 +136,30 @@ subMenuAlteraContato(3):-
 	write("Falta implementar").	
 
 	
-%------------Bloqueia contato-----------------------------------------------------
+
+%------------Utils-----------------------------------------------------
 
 verificaContato(NOME):-
 	call(contato(NOME,_)), !;
 
 	write("Contato nao existe!"), nl,nl,
 	executaMenu().
+
+%------------Favoritos-----------------------------------------------------
+adicionarAosFavoritos(NOME):-
+	call(favorito(contato(NOME,_))), !,
+	write("Contato já está na sua lista de favoritos :)"), nl,nl,
+	executaMenu;
+
+	contato(NOME,X),
+	assertz(favorito(contato(NOME,X))),
+	write("Contato adicionado aos favoritos com sucesso!"),nl,nl,
+	executaMenu().
+
+
+%------------Listar Favoritos-----------------------------------------------------
+
+%------------Bloqueia contato-----------------------------------------------------
 
 bloqueiaContato(NOME):-
 	call(bloqueado(contato(NOME,_))), !,
