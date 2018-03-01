@@ -7,6 +7,6 @@ TODO:
 [x] Remover dos favoritos.  
 [x] Ordenar por nome.
 [x] Adiconar contatos.
-[] Opção de chamar.
-[] Agrupar.
-[] Organizar menu. (Fazer isso depois que terminar todas as funcionalidades).
+[x] Opção de chamar.
+[x] Agrupar.
+[x] Organizar menu. (Fazer isso depois que terminar todas as funcionalidades).
