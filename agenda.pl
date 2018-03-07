@@ -2,6 +2,8 @@
 	favorito(contato(_,_)),
 	bloqueado(contato(_,_)),
 	chamar(contato(_,_),_),
+	grupo(_),
+	participantes(grupo(_), contato(_,_)),
 	contato(_,_).
 
 :-[mensagens].
@@ -289,34 +291,88 @@ menuGrupo():-
 	write('7. Voltar ao menu principal'),nl,
 	read(OP),
 	subMenuGrupo(OP).
+	
 subMenuGrupo(1):- 
-		write('Digite o nome do grupo'),
+		write('Digite o nome do grupo:'),
 		read(NomeGrupo),nl,
 		assertz(grupo(NomeGrupo)),
-		menuGrupo(),
-subMenuGrupo(2).
+		menuGrupo().
+		
+subMenuGrupo(2):-
+	write('Digite o nome do contato: '),
+	read(NomeContato), nl,
+	write('Digite o nome do grupo: '),
+	read(NomeGrupo), nl,
+	adicionaContatoAGrupo(NomeContato, NomeGrupo),
+	menuGrupo().
+
 subMenuGrupo(3):-
 	findall(X, (grupo(X)), L),
 	listarGrupos(L).
 	
-subMenuGrupo(4).
-subMenuGrupo(5).
-subMenuGrupo(6).
+subMenuGrupo(4):-
+	write('Digite o nome do contato: '),
+	read(NomeContato), nl,
+	write('Digite o nome do grupo: '),
+	read(NomeGrupo), nl,
+	removeContatoDeGrupo(NomeContato,NomeGrupo),
+	menuGrupo().
+
+subMenuGrupo(5):-
+	write('Digite o nome do grupo'),
+	read(NomeGrupo),nl,
+	removeGrupo(NomeGrupo).
+subMenuGrupo(6):-
+	write('Digite o nome do grupo: '),
+	read(NomeGrupo), nl,
+	listarContatosPorGrupo(NomeGrupo),
+	menuGrupo().
+	
 subMenuGrupo(7):- executaMenu().	
 subMenuGrupo(_):- menuGrupo().	
 	
-	
+
+adicionaContatoAGrupo(NomeContato, NomeGrupo):-
+	verificaContato(NomeContato),
+	verificaGrupo(NomeGrupo),
+	assertz(participantes(grupo(NomeGrupo), contato(NomeContato,_))).
+
+removeContatoDeGrupo(NomeContato,NomeGrupo):-
+	verificaContato(NomeContato),
+	verificaGrupo(NomeGrupo),
+	call(participantes(grupo(NomeGrupo), contato(NomeContato,_))), !,
+	retract(participantes(grupo(NomeGrupo), contato(NomeContato,_)));
+	nl, write('Contato não pertence a este grupo'),nl,nl.
 	
 listarGrupos([]):- menuGrupo().
 listarGrupos([X|Tail]):-
 	write("Nome: "),write(X),nl,
 	listarGrupos(Tail).	
+
+listarContatosPorGrupo(NomeGrupo):-
+	verificaGrupo(NomeGrupo),
+	call(participantes(grupo(NomeGrupo), contato(_,_))), !,
+	write(NomeGrupo),nl,nl,
+	findall(X, participantes(grupo(NomeGrupo), contato(X,_)),L),
+	exibeContatos(L);
+	write('Este grupo esta vazio'),nl.
 	
+verificaGrupo(NomeGrupo):-
+	call(grupo(NomeGrupo)), !;
+	write('Este grupo ainda não existe'),nl, menuGrupo().
+
 	
+esvaziaGrupo(NomeGrupo):-
+	call(participantes(grupo(NomeGrupo), contato(_,_))), !,
+	retractall(participantes(grupo(NomeGrupo), contato(_,_)));
+	menuGrupo().
 	
+removeGrupo(NomeGrupo):-
+	verificaGrupo(NomeGrupo),
+	retract(grupo(NomeGrupo)),
+	esvaziaGrupo(NomeGrupo),
+	write('Grupo removido com sucesso'),nl,nl.
 	
-	
-		
 
 
 	
