@@ -54,8 +54,9 @@ sw(7):-
 sw(8):-
 	write('Digite o nome do contato que deseja alterar: '),
 	read(NOMEANTIGO),nl,
-	alteraContato(NOMEANTIGO,_).
-
+	verificaContato(NOMEANTIGO),
+	alteraContato(NOMEANTIGO),
+	executaMenu().
 sw(9):-
 	write("Nome: "), read(NOME), nl,
 	verificaContato(NOME),
@@ -128,23 +129,38 @@ apagaContato(NOME):-
 %-------------Método que altera o fato contato da base de dados ------------------
 
 
-alteraContato(_,_):- 
+alteraContato(NOMEANTIGO):- 
     write('Digite a opção desejada:'),nl,
 	write('1: Nome.'),nl,
 	write('2: Telefone.'),nl,
 	write('3: Nome e telefone.'),nl,
 	read(OP),nl,
-	write("falta implementar"),
-	subMenuAlteraContato(OP).
+	subMenuAlteraContato(OP,NOMEANTIGO).
 	
-subMenuAlteraContato(1):- 
-	write("Falta implementar").
+subMenuAlteraContato(1,NomeAntigo):- 
+	write("digite o novo nome:"),
+	read(NovoNome),nl,
+	contato(NomeAntigo,X),
+	apagaContato(NomeAntigo),
+	assertz(contato(NovoNome,X)),
+	write("Nome alterado com sucesso!"),nl,nl.
 	
-subMenuAlteraContato(2):- 
-	write("Falta implementar").	
 	
-subMenuAlteraContato(3):- 
-	write("Falta implementar").	
+subMenuAlteraContato(2,NomeAntigo):- 
+	write("digite o novo número:"),
+	read(NovoNumero),nl,
+	apagaContato(NomeAntigo),
+	assertz(contato(NomeAntigo,NovoNumero)),
+	write("Numero alterado com sucesso!"),nl,nl.
+	
+subMenuAlteraContato(3,NomeAntigo):- 
+	write("digite o novo nome:"),
+	read(NovoNome),nl,
+	write("digite o novo número:"),
+	read(NovoNumero),nl,
+	apagaContato(NomeAntigo),
+	assertz(contato(NovoNome,NovoNumero)),
+	write("Nome e número alterados com sucesso!"),nl,nl.
 
 	
 
