@@ -289,14 +289,28 @@ menuGrupo():-
 	write('7. Voltar ao menu principal'),nl,
 	read(OP),
 	subMenuGrupo(OP).
-subMenuGrupo(1).
+subMenuGrupo(1):- 
+		write('Digite o nome do grupo'),
+		read(NomeGrupo),nl,
+		assertz(grupo(NomeGrupo)),
+		menuGrupo(),
 subMenuGrupo(2).
-subMenuGrupo(3).
+subMenuGrupo(3):-
+	findall(X, (grupo(X)), L),
+	listarGrupos(L).
+	
 subMenuGrupo(4).
 subMenuGrupo(5).
 subMenuGrupo(6).
 subMenuGrupo(7):- executaMenu().	
 subMenuGrupo(_):- menuGrupo().	
+	
+	
+	
+listarGrupos([]):- menuGrupo().
+listarGrupos([X|Tail]):-
+	write("Nome: "),write(X),nl,
+	listarGrupos(Tail).	
 	
 	
 	
