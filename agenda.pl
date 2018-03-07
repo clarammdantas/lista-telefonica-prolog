@@ -46,6 +46,12 @@ sw(5):-
 	sort(L,O),
 	exibeContatos(O).
 
+sw(6):-
+	write('Digite o nome do contato que deseja chamar:'),
+	read(Nome),nl,
+	chamaContato(Nome),
+	executaMenu().
+
 sw(7):-
 	write("Nome: "), read(NOME), nl,
 	verificaContato(NOME),
@@ -82,14 +88,15 @@ sw(14):-
 	write('Lista telefônica encerrada!'),nl,
 	halt(0).
 
-sw(_):- 
-	write('Opção invalida,tente novamente!'),nl,
+sw(X):-
+
 	executaMenu().
 
 % --------------Adiciona fato contato(NOME,NUMERO) a base de dados----------------
 
 adicionaContato(NOME,NUMERO):-
-	assertz(contato(NOME,NUMERO)).
+	assertz(contato(NOME,NUMERO)),
+	assertz(chamar(contato(NOME,NUMERO),0)).
 	
 % -------------Método que imprime os contatos e seus respctivos números.-------------
 
@@ -117,13 +124,17 @@ buscarContato(NOME,NUMERO):-
 apagaContato(NOME):-
 	bloqueado(contato(NOME,_)),
 	retract(bloqueado(contato(NOME,_))),
-	retract(contato(NOME,_));
+	retract(contato(NOME,_)),
+	retract(chamar(contato(NOME,_),_));
 
 	favorito(contato(NOME,_)),
 	retract(favorito(contato(NOME,_))),
-	retract(contato(NOME,_));
-
-	retract(contato(NOME,_)).
+	retract(contato(NOME,_)),
+	retract(chamar(contato(NOME,_),_));
+	
+	retract(contato(NOME,_)),
+	retract(chamar(contato(NOME,_),_)).
+	
 	
 
 %-------------Método que altera o fato contato da base de dados ------------------
@@ -141,8 +152,10 @@ subMenuAlteraContato(1,NomeAntigo):-
 	write("digite o novo nome:"),
 	read(NovoNome),nl,
 	contato(NomeAntigo,X),
+	chamar(contato(NomeAntigo,_),CHAMADAS),
 	apagaContato(NomeAntigo),
 	assertz(contato(NovoNome,X)),
+	assertz(chamar(contato(NovoNome,X),CHAMADAS)),
 	write("Nome alterado com sucesso!"),nl,nl.
 	
 	
@@ -159,7 +172,9 @@ subMenuAlteraContato(3,NomeAntigo):-
 	write("digite o novo número:"),
 	read(NovoNumero),nl,
 	apagaContato(NomeAntigo),
+	chamar(contato(NomeAntigo,_),CHAMADAS),
 	assertz(contato(NovoNome,NovoNumero)),
+	assertz(chamar(contato(NovoNome,NovoNumero),CHAMADAS)),
 	write("Nome e número alterados com sucesso!"),nl,nl.
 
 	
@@ -228,7 +243,20 @@ desbloquearContato(NOME):-
 
 	write("Contato já é desbloqueado!"), nl, nl,
 	executaMenu().
-
+%--------Chama contato-------------------------------------------------------
+chamaContato(Nome):-
+	call(contato(Nome,_)), !,
+	chamar(contato(Nome,_),X),
+	retract(chamar(contato(Nome,_),_)),
+	A is X + 1,
+	assertz(chamar(contato(Nome,_),A)),
+	write(A),nl,
+	verificaFavorito(Nome,X);
+	write("Contato nao existe!"), nl,nl.
+	
+verificaFavorito(Nome,X):- X = 5,call(favorito(contato(Nome,_))), !;contato(Nome,X),
+	assertz(favorito(contato(Nome,X))).
+	
 main:-
 executaMenu(),
 halt(0).
