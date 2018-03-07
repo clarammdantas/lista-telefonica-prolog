@@ -164,9 +164,12 @@ alteraContato(NOMEANTIGO):-
 subMenuAlteraContato(1,NomeAntigo):- 
 	write("digite o novo nome:"),
 	read(NovoNome),nl,
+	
 	contato(NomeAntigo,X),
+	alteraBloqueado(NomeAntigo,NovoNome,X),
 	chamar(contato(NomeAntigo,_),CHAMADAS),
 	retract(chamar(contato(NomeAntigo,_),_)),
+
 	apagaContato(NomeAntigo),
 	adicionaContato(NovoNome, X,CHAMADAS),
 	write("Nome alterado com sucesso!"),nl,nl.
@@ -184,12 +187,19 @@ subMenuAlteraContato(3,NomeAntigo):-
 	read(NovoNome),nl,
 	write("digite o novo número:"),
 	read(NovoNumero),nl,
-	apagaContato(NomeAntigo),
+	contato(NomeAntigo,_),
 	chamar(contato(NomeAntigo,_),CHAMADAS),
+	retract(chamar(contato(NomeAntigo,_),_)),
+	alteraBloqueado(NomeAntigo,NovoNome,NovoNumero),
+	apagaContato(NomeAntigo),
 	adicionaContato(NovoNome, NovoNumero,CHAMADAS),
 	write("Nome e número alterados com sucesso!"),nl,nl.
 
+alteraBloqueado(Nome,NovoNome,Numero):-
+	call(bloqueado(contato(Nome,_))), !,
 	
+		retract(bloqueado(contato(Nome,_))),
+			assertz(bloqueado(contato(NovoNome,Numero)));contato(Nome,_).
 
 %------------Utils-----------------------------------------------------
 
