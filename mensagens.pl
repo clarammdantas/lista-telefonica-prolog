@@ -12,6 +12,7 @@ exibeMenu():-
 	write('11.Listar contatos bloqueados'),nl,
 	write('12.Listar favoritos'),nl,
 	write('13.Remover favorito'),nl,
-	write('14.Sair'),nl,
+	write('14.Grupos'),nl,
+	write('15.Sair'),nl,
 	write('Digite sua opcao: '),nl.
 	

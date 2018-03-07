@@ -49,8 +49,14 @@ sw(5):-
 sw(6):-
 	write('Digite o nome do contato que deseja chamar:'),
 	read(Nome),nl,
+	call(bloqueado(contato(Nome,_))), !,
+	write('Contato bloqueado.'),nl,
+	executaMenu();
 	chamaContato(Nome),
+	
 	executaMenu().
+	
+	
 
 sw(7):-
 	write("Nome: "), read(NOME), nl,
@@ -84,11 +90,16 @@ sw(13):-
 	write("Nome: "), read(NOME), nl,
 	verificaContato(NOME),
 	removerFavorito(NOME).
+
 sw(14):-
+	menuGrupo(),
+	executaMenu().
+
+sw(15):-
 	write('Lista telefônica encerrada!'),nl,
 	halt(0).
 
-sw(X):-
+sw(_):-
 
 	executaMenu().
 
@@ -251,11 +262,40 @@ chamaContato(Nome):-
 	A is X + 1,
 	assertz(chamar(contato(Nome,_),A)),
 	write(A),nl,
-	verificaFavorito(Nome,X);
+	verificaFavorito(Nome,A);
 	write("Contato nao existe!"), nl,nl.
 	
-verificaFavorito(Nome,X):- X = 5,call(favorito(contato(Nome,_))), !;contato(Nome,X),
+verificaFavorito(Nome,X):- X = 5,call(favorito(contato(Nome,_))),write("a"), !;contato(Nome,X),write('b'),
 	assertz(favorito(contato(Nome,X))).
+
+%----------Menu grupo------------------------------------------------------------
+
+menuGrupo():-
+	write('1. Adicionar novo grupo.'),nl,
+	write('2. Adicionar contato a um grupo.'),nl,
+	write('3. Listar grupos'),nl,
+	write('4. Remover contato de um grupo.'),nl,
+	write('5. Remover grupo.'),nl,
+	write('6. Listar contatos de um grupo'),nl,
+	write('7. Voltar ao menu principal'),nl,
+	read(OP),
+	subMenuGrupo(OP).
+subMenuGrupo(1).
+subMenuGrupo(2).
+subMenuGrupo(3).
+subMenuGrupo(4).
+subMenuGrupo(5).
+subMenuGrupo(6).
+subMenuGrupo(7):- executaMenu().	
+subMenuGrupo(_):- menuGrupo().	
+	
+	
+	
+	
+	
+		
+
+
 	
 main:-
 executaMenu(),
