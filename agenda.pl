@@ -65,7 +65,9 @@ sw(6):-
 sw(7):-
 	write("Nome: "), read(NOME), nl,
 	verificaContato(NOME),
-	adicionarAosFavoritos(NOME).
+	exibirContatosNomeComum(NOME),
+	write('Digite o número para confirmar: '), read(NUMERO),
+	adicionarAosFavoritos(NOME,NUMERO).
 
 sw(8):-
 	write('Digite o nome do contato que deseja alterar: '),
@@ -99,10 +101,14 @@ sw(12):-
 	write('*:･ﾟ✧*:･ﾟ✧ (ღ˘⌣˘ღ)  Contatos favoritos  (ღ˘⌣˘ღ) *:･ﾟ✧*:･ﾟ✧'),nl,nl,
 	findall(X, (favorito(X)), L),
 	listarContatos(L).
+
 sw(13):-
 	write("Nome: "), read(NOME), nl,
 	verificaContato(NOME),
-	removerFavorito(NOME).
+	exibirContatosNomeComum(NOME),
+	write('Digite o número para confirmar: '), read(NUMERO),
+
+	removerFavorito(NOME,NUMERO).
 
 sw(14):-
 	menuGrupo(),
@@ -224,22 +230,22 @@ exibirContatosNomeComum(NOME):-
 	forall(bloqueado(contato(NOME,Y)), format('Nome: ~w~nNumero: ~w~n~n', [NOME,Y])).
 
 %------------Adicionar um contato aos favoritos-----------------------------------------------------
-adicionarAosFavoritos(NOME):-
-	call(favorito(contato(NOME,_))), !,
+adicionarAosFavoritos(NOME,NUMERO):-
+	call(favorito(contato(NOME,NUMERO))), !,
 	write("Contato já está na sua lista de favoritos :)"), nl,nl,
 	executaMenu;
 
-	contato(NOME,X),
-	assertz(favorito(contato(NOME,X))),
+	contato(NOME,NUMERO),
+	assertz(favorito(contato(NOME,NUMERO))),
 	write("Contato adicionado aos favoritos com sucesso!"),nl,nl,
 	executaMenu().
 
 
 %------------Remover um contato da lista de favoritos-----------------------------------------------------
-removerFavorito(NOME):-
-	call(favorito(contato(NOME,X))), !,
-	apagaContato(NOME),
-	adicionaContato(NOME, X),
+removerFavorito(NOME,NUMERO):-
+	call(favorito(contato(NOME,NUMERO))), !,
+	apagaContato(NOME,NUMERO),
+	adicionaContato(NOME, NUMERO, CHAMADAS),
 	write("Contato removido da lista de favoritos!"),nl,nl,
 	executaMenu(), nl;
 
