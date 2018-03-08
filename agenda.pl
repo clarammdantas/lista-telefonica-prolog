@@ -71,7 +71,9 @@ sw(8):-
 	write('Digite o nome do contato que deseja alterar: '),
 	read(NOMEANTIGO),nl,
 	verificaContato(NOMEANTIGO),
-	alteraContato(NOMEANTIGO),
+	exibirContatosNomeComum(NOME),
+	write('Digite o número para confirmar: '), read(NUMERO),
+	alteraContato(NOMEANTIGO, NUMERO),
 	executaMenu().
 
 sw(9):-
@@ -157,45 +159,45 @@ apagaContato(NOME,NUMERO):-
 %-------------Método que altera o fato contato da base de dados ------------------
 
 
-alteraContato(NOMEANTIGO):- 
+alteraContato(NOMEANTIGO, NUMERO):- 
 	alterarContatoMenu(),
 	read(OP),nl,
-	subMenuAlteraContato(OP,NOMEANTIGO).
+	subMenuAlteraContato(OP,NOMEANTIGO,NUMERO).
 	
-subMenuAlteraContato(1,NomeAntigo):- 
+subMenuAlteraContato(1,NomeAntigo,NUMERO):- 
 	write("digite o novo nome:"),
 	read(NovoNome),nl,
 	
-	contato(NomeAntigo,X),
-	alteraBloqueado(NomeAntigo,NovoNome,X),
-	chamar(contato(NomeAntigo,_),CHAMADAS),
-	retract(chamar(contato(NomeAntigo,_),_)),
+	contato(NomeAntigo,NUMERO),
+	alteraBloqueado(NomeAntigo,NovoNome,NUMERO),
+	chamar(contato(NomeAntigo,NUMERO),CHAMADAS),
+	retract(chamar(contato(NomeAntigo,NUMERO),_)),
 
-	apagaContato(NomeAntigo,X),
-	adicionaContato(NovoNome, X,CHAMADAS),
+	apagaContato(NomeAntigo,NUMERO),
+	adicionaContato(NovoNome, NUMERO,CHAMADAS),
 	write("Nome alterado com sucesso!"),nl,nl.
 	
 	
-subMenuAlteraContato(2,NomeAntigo):- 
+subMenuAlteraContato(2,NomeAntigo,NUMERO):- 
 	write("digite o novo número:"),
 	read(NovoNumero),nl,
 
-	apagaContato(NomeAntigo,X),
+	apagaContato(NomeAntigo,NUMERO),
 	assertz(contato(NomeAntigo,NovoNumero)),
 
 	write("Numero alterado com sucesso!"),nl,nl.
 	
-subMenuAlteraContato(3,NomeAntigo):- 
+subMenuAlteraContato(3,NomeAntigo,NUMERO):- 
 	write("digite o novo nome:"),
 	read(NovoNome),nl,
 	write("digite o novo número:"),
 	read(NovoNumero),nl,
 
-	contato(NomeAntigo,_),
-	chamar(contato(NomeAntigo,_),CHAMADAS),
-	retract(chamar(contato(NomeAntigo,_),_)),
+	contato(NomeAntigo,NUMERO),
+	chamar(contato(NomeAntigo,NUMERO),CHAMADAS),
+	retract(chamar(contato(NomeAntigo,NUMERO),_)),
 	alteraBloqueado(NomeAntigo,NovoNome,NovoNumero),
-	apagaContato(NomeAntigo,X),
+	apagaContato(NomeAntigo,NUMERO),
 	adicionaContato(NovoNome, NovoNumero,CHAMADAS),
 
 	write("Nome e número alterados com sucesso!"),nl,nl.
