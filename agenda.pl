@@ -76,7 +76,9 @@ sw(8):-
 sw(9):-
 	write("Nome: "), read(NOME), nl,
 	verificaContato(NOME),
-	bloqueiaContato(NOME).
+	exibirContatosNomeComum(NOME),
+	write('Digite o número para confirmar: '), read(NUMERO),
+	bloqueiaContato(NOME,NUMERO).
 
 sw(10):-
 	write("Nome: "), read(NOME), nl,
@@ -232,18 +234,19 @@ removerFavorito(NOME):-
 	executaMenu().
 %------------Bloqueia contato-----------------------------------------------------
 
-bloqueiaContato(NOME):-
-	call(bloqueado(contato(NOME,_))), !,
+bloqueiaContato(NOME, NUMERO):-
+	call(bloqueado(contato(NOME,NUMERO))), !,
 	write("Contato já está bloqueado!"), nl,nl,
 	executaMenu();
 
-	contato(NOME,X),
-	assertz(bloqueado(contato(NOME,X))),
+	assertz(bloqueado(contato(NOME,NUMERO))),
+	retract(contato(NOME,NUMERO)),
 	write("Contato bloqueado com sucesso!"),nl,nl,
 	executaMenu().
 
 
 %---------Printa uma lista de contatos----------------------------------------
+
 
 listarContatos([]):-
 	executaMenu().
@@ -286,8 +289,6 @@ verificaFavorito(Nome,5):-call(favorito(contato(Nome,_))), !;contato(Nome,X),
 
 exibeContatoss([]).
 exibeContatoss([Head|Tail]):-
-
-
 	write(Head),nl,
 	
 	exibeContatos(Tail).
