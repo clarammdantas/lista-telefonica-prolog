@@ -1,20 +1,29 @@
 exibeMenu():-
-	write('1.Adicionar contato'),nl,
-	write('2.Listar contatos'),nl,
-	write('3.Apagar contato'),nl,nl,
-	write('4.Buscar contato'),nl,
-	write('5.Ordenar '),nl,
-	write('6.Chamar '),nl,nl,
-	write('7.Adicionar favorito'),nl,
-	write('8.Alterar contato'),nl,
-	write('9.Bloquear contato'),nl,nl,
-	write('10.Desbloquear contato'), nl,
-	write('11.Listar contatos bloqueados'),nl,
-	write('12.Listar favoritos'),nl,nl,
-	write('13.Remover favorito'),nl,
-	write('14.Grupos'),nl,
-	write('15.Sair'),nl,nl,
-	write('Digite sua opcao: '),nl.
+   
+   write('_________________________________________________________________________________________'),nl, 
+	write('|| 1.Adicionar contato    '),                                                        
+	write('   6.Chamar                 '),
+	write('   11.Listar contatos bloqueados ||'),nl,
+
+
+	write('|| 2.Listar contatos      '),
+	write('   7.Adicionar favorito     '),
+	write('   12.Listar favoritos           ||'),nl,
+	
+	write('|| 3.Apagar contato       '),
+	write('   8.Alterar contato        '),
+	write('   13.Remover favorito           ||'),nl,
+	
+	write('|| 4.Buscar contato       '),
+	write('   9.Bloquear contato       '),
+    write('   14.Grupos                     ||'),nl,
+
+
+	write('|| 5.Ordenar              '),
+	write('   10.Desbloquear contato   '),
+	write('   15.Sair                       ||'),nl,
+	write('||_____________________________________________________________________________________||'),nl, nl,
+	write('Digite sua opcao: ').
 	
 exibeMenuGrupo():-
 	write('1. Adicionar novo grupo.'),nl,

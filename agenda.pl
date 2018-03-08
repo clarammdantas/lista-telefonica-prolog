@@ -20,14 +20,15 @@ executaMenu():-
 %--------------Opcões Menu principal.------------
 
 sw(1):-
-	write("Nome: "),read(NOME),nl,
-	write("Numero: "),read(NUMERO),
+	write("Nome   "),read(NOME),
+	write("Numero "),read(NUMERO),nl,
     adicionaContato(NOME,NUMERO,0),
-    write("Contato adicionado com sucesso!"),nl, nl,
+    writeln("Contato adicionado com sucesso! (✿ ◠ ‿ ◠ )"),nl, nl,
 
 	executaMenu().
 
 sw(2):-
+	write('*:･ﾟ✧*:･ﾟ✧ Seus Contatos *:･ﾟ✧*:･ﾟ✧'),nl,nl,
 	findall(X, (contato(X,_)),L),
 	exibeContatos(L).
 
@@ -36,21 +37,23 @@ sw(3):-
 	verificaContato(NOME), %se o contato nao existe, executa menu de novo
 	apagaContato(NOME),
 
-	write("Contato apagado com sucesso!"), nl, nl,
+	write("Contato apagado com sucesso! ヽ(ﾟｰ ﾟ*ヽ) "), nl, nl,
 	executaMenu().
 
 sw(4):-
 	write('Digite o nome do contato: '),
-	read(NOME),nl,
+	read(NOME),nl,nl,
+	write('*:･ﾟ✧*:･ﾟ✧ Resultado da busca *:･ﾟ✧*:･ﾟ✧'),nl,nl,
 	buscarContato(NOME,_).
 
 sw(5):-
 	findall(X, (contato(X,_)),L),
 	sort(L,O),
+	write('*:･ﾟ✧*:･ﾟ✧ Contatos ordenados *:･ﾟ✧*:･ﾟ✧'),nl,nl,
 	exibeContatos(O).
 
 sw(6):-
-	write('Digite o nome do contato que deseja chamar:'),
+	write('Digite o nome do contato que deseja chamar: '),
 	read(Nome),nl,
 	verificaContato(Nome),
 	chamaContato(Nome),
@@ -79,10 +82,12 @@ sw(10):-
 	desbloquearContato(NOME).
 
 sw(11):-
+	write('*:･ﾟ✧*:･ﾟ✧ 	ψ(｀∇´)ψ  Contatos bloqueados  	ψ(｀∇´)ψ  *:･ﾟ✧*:･ﾟ✧'),nl,nl,
 	findall(X, (bloqueado(X)),L),
 	listarContatos(L).
 
 sw(12):-
+		write('*:･ﾟ✧*:･ﾟ✧ (ღ˘⌣˘ღ)  Contatos favoritos  (ღ˘⌣˘ღ) *:･ﾟ✧*:･ﾟ✧'),nl,nl,
 	findall(X, (favorito(X)), L),
 	listarContatos(L).
 sw(13):-
@@ -95,7 +100,7 @@ sw(14):-
 	executaMenu().
 
 sw(15):-
-	write('Lista telefônica encerrada!'),nl,
+	write('Lista telefônica encerrada! ( ╯°□ °）╯ ︵ ┻━┻ '),nl,nl,
 	halt(0).
 
 sw(_):-
@@ -260,7 +265,8 @@ chamaContato(Nome):-
 	call(bloqueado(contato(Nome,_))),!,
 	write('contato bloqueado!'),nl;
 	chamar(contato(Nome,_),X),
-	A is X + 1,
+	A is X + 1,nl,nl,
+	write('Chamando... 📞'),nl,nl,
 	realizaChamada(Nome, A).
 
 realizaChamada(Nome,X):-
