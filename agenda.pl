@@ -57,7 +57,6 @@ sw(6):-
 	executaMenu().
 	
 	
-
 sw(7):-
 	write("Nome: "), read(NOME), nl,
 	verificaContato(NOME),
@@ -109,8 +108,6 @@ adicionaContato(NOME,NUMERO,CHAMADAS):-
 	assertz(contato(NOME,NUMERO)),
 	assertz(chamar(contato(NOME,NUMERO),CHAMADAS)).
 	
-		
-	
 % -------------Método que imprime os contatos e seus respctivos números.-------------
 
 exibeContatos([]):-
@@ -119,9 +116,9 @@ exibeContatos([Head|Tail]):-
 	call(bloqueado(contato(Head,_))), !,
 	exibeContatos(Tail);
 
-	write('Nome: '),write(Head),nl,
+	write('Nome: '),writeln(Head),
 	contato(Head,Y),
-	write('Numero: '),write(Y),nl,nl,
+	write('Numero: '),writeln(Y),nl,
 	exibeContatos(Tail).
 
 % -------------Método para buscar um fato na base de dados. ------------
@@ -130,7 +127,7 @@ buscarContato(NOME,NUMERO):-
     call(contato(NOME,NUMERO)), !,
     write('Nome:'),write(NOME),nl,
     write('Numero:'),write(NUMERO),nl, executaMenu();
-    write('O contato não existe!'),nl, executaMenu().
+    writeln('O contato não existe!'),nl, executaMenu().
 
 % ------------Método que apaga fato contato(NOME, _) da base de dados.------------
 
@@ -139,25 +136,17 @@ apagaContato(NOME):-
 	retract(bloqueado(contato(NOME,_))),
 	retract(contato(NOME,_));
 	
-
 	call(favorito(contato(NOME,_))),!,
 	retract(favorito(contato(NOME,_))),
 	retract(contato(NOME,_));
 	
-	
 	retract(contato(NOME,_)).
-
 	
-	
-
 %-------------Método que altera o fato contato da base de dados ------------------
 
 
 alteraContato(NOMEANTIGO):- 
-    write('Digite a opção desejada:'),nl,
-	write('1: Nome.'),nl,
-	write('2: Telefone.'),nl,
-	write('3: Nome e telefone.'),nl,
+	alterarContatoMenu(),
 	read(OP),nl,
 	subMenuAlteraContato(OP,NOMEANTIGO).
 	
@@ -249,8 +238,8 @@ bloqueiaContato(NOME):-
 listarContatos([]):-
 	executaMenu().
 listarContatos([contato(X,Y)|Tail]):-
-	write("Nome: "),write(X),nl,
-	write("Numero: "),write(Y),nl,
+	write("Nome: "),writeln(X),
+	write("Numero: "),writeln(Y),
 	listarContatos(Tail).
 
 
@@ -265,6 +254,7 @@ desbloquearContato(NOME):-
 
 	write("Contato já é desbloqueado!"), nl, nl,
 	executaMenu().
+	
 %--------Chama contato-------------------------------------------------------
 chamaContato(Nome):-
 	call(bloqueado(contato(Nome,_))),!,
@@ -292,13 +282,7 @@ exibeContatoss([Head|Tail]):-
 	exibeContatos(Tail).
 
 menuGrupo():-
-	write('1. Adicionar novo grupo.'),nl,
-	write('2. Adicionar contato a um grupo.'),nl,
-	write('3. Listar grupos'),nl,
-	write('4. Remover contato de um grupo.'),nl,
-	write('5. Remover grupo.'),nl,
-	write('6. Listar contatos de um grupo'),nl,
-	write('7. Voltar ao menu principal'),nl,
+	exibeMenuGrupo(),
 	read(OP),
 	subMenuGrupo(OP).
 	
@@ -306,6 +290,7 @@ subMenuGrupo(1):-
 		write('Digite o nome do grupo:'),
 		read(NomeGrupo),nl,
 		assertz(grupo(NomeGrupo)),
+		writeln('Grupo criado com sucesso!'),
 		menuGrupo().
 		
 subMenuGrupo(2):-
@@ -314,6 +299,7 @@ subMenuGrupo(2):-
 	write('Digite o nome do grupo: '),
 	read(NomeGrupo), nl,
 	adicionaContatoAGrupo(NomeContato, NomeGrupo),
+	writeln('Contato adicionado a grupo com sucesso!'),nl,
 	menuGrupo().
 
 subMenuGrupo(3):-
@@ -326,6 +312,7 @@ subMenuGrupo(4):-
 	write('Digite o nome do grupo: '),
 	read(NomeGrupo), nl,
 	removeContatoDeGrupo(NomeContato,NomeGrupo),
+	writeln('Contato removido com sucesso!'),nl,
 	menuGrupo().
 
 subMenuGrupo(5):-
@@ -385,7 +372,6 @@ removeGrupo(NomeGrupo):-
 	
 
 
-	
 main:-
 executaMenu(),
 halt(0).
