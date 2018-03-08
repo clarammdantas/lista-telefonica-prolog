@@ -88,7 +88,7 @@ sw(9):-
 sw(10):-
 	write("Nome: "), read(NOME), nl,
 	verificaContato(NOME),
-	exibirContatosNomeComum(NOME),
+	exibirContatosNomeBloqueado(NOME),
 	write('Digite o número para confirmar: '), read(NUMERO),
 	desbloquearContato(NOME, NUMERO).
 
@@ -225,8 +225,8 @@ verificaContato(NOME):-
 	executaMenu().
 
 exibirContatosNomeComum(NOME):-
-	forall(contato(NOME,Y), format('Nome: ~w~nNumero: ~w~n~n', [NOME,Y]));
-
+	forall(contato(NOME,Y), format('Nome: ~w~nNumero: ~w~n~n', [NOME,Y])).
+exibirContatosNomeBloqueado(NOME):-
 	forall(bloqueado(contato(NOME,Y)), format('Nome: ~w~nNumero: ~w~n~n', [NOME,Y])).
 
 %------------Adicionar um contato aos favoritos-----------------------------------------------------
