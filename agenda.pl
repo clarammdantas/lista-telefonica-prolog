@@ -35,7 +35,9 @@ sw(2):-
 sw(3):-
 	write("Nome: "),read(NOME),nl,
 	verificaContato(NOME), %se o contato nao existe, executa menu de novo
-	apagaContato(NOME),
+	exibirContatosNomeComum(NOME),
+	write('Digite o número para confirmar: '), read(NUMERO),
+	apagaContato(NOME,NUMERO),
 
 	write("Contato apagado com sucesso! ヽ(ﾟｰ ﾟ*ヽ) "), nl, nl,
 	executaMenu().
@@ -136,16 +138,16 @@ buscarContato(NOME,NUMERO):-
 
 % ------------Método que apaga fato contato(NOME, _) da base de dados.------------
 
-apagaContato(NOME):-
-	call(bloqueado(contato(NOME,_))), !,
-	retract(bloqueado(contato(NOME,_))),
-	retract(contato(NOME,_));
+apagaContato(NOME,NUMERO):-
+	call(bloqueado(contato(NOME,NUMERO))), !,
+	retract(bloqueado(contato(NOME,NUMERO))),
+	retract(contato(NOME,NUMERO));
 	
-	call(favorito(contato(NOME,_))),!,
-	retract(favorito(contato(NOME,_))),
-	retract(contato(NOME,_));
+	call(favorito(contato(NOME,NUMERO))),!,
+	retract(favorito(contato(NOME,NUMERO))),
+	retract(contato(NOME,NUMERO));
 	
-	retract(contato(NOME,_)).
+	retract(contato(NOME,NUMERO)).
 	
 %-------------Método que altera o fato contato da base de dados ------------------
 
@@ -202,6 +204,9 @@ verificaContato(NOME):-
 
 	write("Contato nao existe!"), nl,nl,
 	executaMenu().
+
+exibirContatosNomeComum(NOME):-
+	forall(contato(NOME,Y), format('Nome: ~w~nNumero: ~w~n~n', [NOME,Y])).
 
 %------------Adicionar um contato aos favoritos-----------------------------------------------------
 adicionarAosFavoritos(NOME):-
