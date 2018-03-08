@@ -29,8 +29,8 @@ sw(1):-
 
 sw(2):-
 	write('*:･ﾟ✧*:･ﾟ✧ Seus Contatos *:･ﾟ✧*:･ﾟ✧'),nl,nl,
-	findall(X, (contato(X,_)),L),
-	exibeContatos(L).
+	forall(contato(X,Y), format('Nome: ~w~nNumero: ~w~n~n', [X,Y])),
+	executaMenu().
 
 sw(3):-
 	write("Nome: "),read(NOME),nl,
