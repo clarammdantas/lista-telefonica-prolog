@@ -29,13 +29,15 @@ sw(1):-
 
 sw(2):-
 	write('*:･ﾟ✧*:･ﾟ✧ Seus Contatos *:･ﾟ✧*:･ﾟ✧'),nl,nl,
-	findall(X, (contato(X,_)),L),
-	exibeContatos(L).
+	forall(contato(X,Y), format('Nome: ~w~nNumero: ~w~n~n', [X,Y])),
+	executaMenu().
 
 sw(3):-
 	write("Nome: "),read(NOME),nl,
 	verificaContato(NOME), %se o contato nao existe, executa menu de novo
-	apagaContato(NOME),
+	exibirContatosNomeComum(NOME),
+	write('Digite o número para confirmar: '), read(NUMERO),
+	apagaContato(NOME,NUMERO),
 
 	write("Contato apagado com sucesso! ヽ(ﾟｰ ﾟ*ヽ) "), nl, nl,
 	executaMenu().
@@ -63,23 +65,32 @@ sw(6):-
 sw(7):-
 	write("Nome: "), read(NOME), nl,
 	verificaContato(NOME),
-	adicionarAosFavoritos(NOME).
+	exibirContatosNomeComum(NOME),
+	write('Digite o número para confirmar: '), read(NUMERO),
+	adicionarAosFavoritos(NOME,NUMERO).
 
 sw(8):-
 	write('Digite o nome do contato que deseja alterar: '),
 	read(NOMEANTIGO),nl,
 	verificaContato(NOMEANTIGO),
-	alteraContato(NOMEANTIGO),
+	exibirContatosNomeComum(NOMEANTIGO),
+	write('Digite o número para confirmar: '), read(NUMERO),
+	alteraContato(NOMEANTIGO, NUMERO),
 	executaMenu().
+
 sw(9):-
 	write("Nome: "), read(NOME), nl,
 	verificaContato(NOME),
-	bloqueiaContato(NOME).
+	exibirContatosNomeComum(NOME),
+	write('Digite o número para confirmar: '), read(NUMERO),
+	bloqueiaContato(NOME,NUMERO).
 
 sw(10):-
 	write("Nome: "), read(NOME), nl,
 	verificaContato(NOME),
-	desbloquearContato(NOME).
+	exibirContatosNomeBloqueado(NOME),
+	write('Digite o número para confirmar: '), read(NUMERO),
+	desbloquearContato(NOME, NUMERO).
 
 sw(11):-
 	write('*:･ﾟ✧*:･ﾟ✧ 	ψ(｀∇´)ψ  Contatos bloqueados  	ψ(｀∇´)ψ  *:･ﾟ✧*:･ﾟ✧'),nl,nl,
@@ -87,13 +98,17 @@ sw(11):-
 	listarContatos(L).
 
 sw(12):-
-		write('*:･ﾟ✧*:･ﾟ✧ (ღ˘⌣˘ღ)  Contatos favoritos  (ღ˘⌣˘ღ) *:･ﾟ✧*:･ﾟ✧'),nl,nl,
+	write('*:･ﾟ✧*:･ﾟ✧ (ღ˘⌣˘ღ)  Contatos favoritos  (ღ˘⌣˘ღ) *:･ﾟ✧*:･ﾟ✧'),nl,nl,
 	findall(X, (favorito(X)), L),
 	listarContatos(L).
+
 sw(13):-
 	write("Nome: "), read(NOME), nl,
 	verificaContato(NOME),
-	removerFavorito(NOME).
+	exibirContatosNomeComum(NOME),
+	write('Digite o número para confirmar: '), read(NUMERO),
+
+	removerFavorito(NOME,NUMERO).
 
 sw(14):-
 	menuGrupo(),
@@ -136,57 +151,61 @@ buscarContato(NOME,NUMERO):-
 
 % ------------Método que apaga fato contato(NOME, _) da base de dados.------------
 
-apagaContato(NOME):-
-	call(bloqueado(contato(NOME,_))), !,
-	retract(bloqueado(contato(NOME,_))),
-	retract(contato(NOME,_));
+apagaContato(NOME,NUMERO):-
+	call(bloqueado(contato(NOME,NUMERO))), !,
+	retract(bloqueado(contato(NOME,NUMERO))),
+	retract(contato(NOME,NUMERO));
 	
-	call(favorito(contato(NOME,_))),!,
-	retract(favorito(contato(NOME,_))),
-	retract(contato(NOME,_));
+	call(favorito(contato(NOME,NUMERO))),!,
+	retract(favorito(contato(NOME,NUMERO))),
+	retract(contato(NOME,NUMERO));
 	
-	retract(contato(NOME,_)).
+	retract(contato(NOME,NUMERO)).
 	
 %-------------Método que altera o fato contato da base de dados ------------------
 
 
-alteraContato(NOMEANTIGO):- 
+alteraContato(NOMEANTIGO, NUMERO):- 
 	alterarContatoMenu(),
 	read(OP),nl,
-	subMenuAlteraContato(OP,NOMEANTIGO).
+	subMenuAlteraContato(OP,NOMEANTIGO,NUMERO).
 	
-subMenuAlteraContato(1,NomeAntigo):- 
+subMenuAlteraContato(1,NomeAntigo,NUMERO):- 
 	write("digite o novo nome:"),
 	read(NovoNome),nl,
 	
-	contato(NomeAntigo,X),
-	alteraBloqueado(NomeAntigo,NovoNome,X),
-	chamar(contato(NomeAntigo,_),CHAMADAS),
-	retract(chamar(contato(NomeAntigo,_),_)),
+	contato(NomeAntigo,NUMERO),
+	alteraBloqueado(NomeAntigo,NovoNome,NUMERO),
+	chamar(contato(NomeAntigo,NUMERO),CHAMADAS),
+	retract(chamar(contato(NomeAntigo,NUMERO),_)),
 
-	apagaContato(NomeAntigo),
-	adicionaContato(NovoNome, X,CHAMADAS),
+	apagaContato(NomeAntigo,NUMERO),
+	adicionaContato(NovoNome, NUMERO,CHAMADAS),
 	write("Nome alterado com sucesso!"),nl,nl.
 	
 	
-subMenuAlteraContato(2,NomeAntigo):- 
+subMenuAlteraContato(2,NomeAntigo,NUMERO):- 
 	write("digite o novo número:"),
 	read(NovoNumero),nl,
-	apagaContato(NomeAntigo),
+
+	apagaContato(NomeAntigo,NUMERO),
 	assertz(contato(NomeAntigo,NovoNumero)),
+
 	write("Numero alterado com sucesso!"),nl,nl.
 	
-subMenuAlteraContato(3,NomeAntigo):- 
+subMenuAlteraContato(3,NomeAntigo,NUMERO):- 
 	write("digite o novo nome:"),
 	read(NovoNome),nl,
 	write("digite o novo número:"),
 	read(NovoNumero),nl,
-	contato(NomeAntigo,_),
-	chamar(contato(NomeAntigo,_),CHAMADAS),
-	retract(chamar(contato(NomeAntigo,_),_)),
+
+	contato(NomeAntigo,NUMERO),
+	chamar(contato(NomeAntigo,NUMERO),CHAMADAS),
+	retract(chamar(contato(NomeAntigo,NUMERO),_)),
 	alteraBloqueado(NomeAntigo,NovoNome,NovoNumero),
-	apagaContato(NomeAntigo),
+	apagaContato(NomeAntigo,NUMERO),
 	adicionaContato(NovoNome, NovoNumero,CHAMADAS),
+
 	write("Nome e número alterados com sucesso!"),nl,nl.
 
 alteraBloqueado(Nome,NovoNome,Numero):-
@@ -200,26 +219,33 @@ alteraBloqueado(Nome,NovoNome,Numero):-
 verificaContato(NOME):-
 	call(contato(NOME,_)), !;
 
+	call(bloqueado(contato(NOME,_))), !;
+
 	write("Contato nao existe!"), nl,nl,
 	executaMenu().
 
+exibirContatosNomeComum(NOME):-
+	forall(contato(NOME,Y), format('Nome: ~w~nNumero: ~w~n~n', [NOME,Y])).
+exibirContatosNomeBloqueado(NOME):-
+	forall(bloqueado(contato(NOME,Y)), format('Nome: ~w~nNumero: ~w~n~n', [NOME,Y])).
+
 %------------Adicionar um contato aos favoritos-----------------------------------------------------
-adicionarAosFavoritos(NOME):-
-	call(favorito(contato(NOME,_))), !,
+adicionarAosFavoritos(NOME,NUMERO):-
+	call(favorito(contato(NOME,NUMERO))), !,
 	write("Contato já está na sua lista de favoritos :)"), nl,nl,
 	executaMenu;
 
-	contato(NOME,X),
-	assertz(favorito(contato(NOME,X))),
+	contato(NOME,NUMERO),
+	assertz(favorito(contato(NOME,NUMERO))),
 	write("Contato adicionado aos favoritos com sucesso!"),nl,nl,
 	executaMenu().
 
 
 %------------Remover um contato da lista de favoritos-----------------------------------------------------
-removerFavorito(NOME):-
-	call(favorito(contato(NOME,X))), !,
-	apagaContato(NOME),
-	adicionaContato(NOME, X),
+removerFavorito(NOME,NUMERO):-
+	call(favorito(contato(NOME,NUMERO))), !,
+	apagaContato(NOME,NUMERO),
+	adicionaContato(NOME, NUMERO,_),
 	write("Contato removido da lista de favoritos!"),nl,nl,
 	executaMenu(), nl;
 
@@ -227,18 +253,19 @@ removerFavorito(NOME):-
 	executaMenu().
 %------------Bloqueia contato-----------------------------------------------------
 
-bloqueiaContato(NOME):-
-	call(bloqueado(contato(NOME,_))), !,
+bloqueiaContato(NOME, NUMERO):-
+	call(bloqueado(contato(NOME,NUMERO))), !,
 	write("Contato já está bloqueado!"), nl,nl,
 	executaMenu();
 
-	contato(NOME,X),
-	assertz(bloqueado(contato(NOME,X))),
+	assertz(bloqueado(contato(NOME,NUMERO))),
+	retract(contato(NOME,NUMERO)),
 	write("Contato bloqueado com sucesso!"),nl,nl,
 	executaMenu().
 
 
 %---------Printa uma lista de contatos----------------------------------------
+
 
 listarContatos([]):-
 	executaMenu().
@@ -250,10 +277,10 @@ listarContatos([contato(X,Y)|Tail]):-
 
 %--------Desbloquear contato-------------------------------------------------
 
-desbloquearContato(NOME):-
-	call(bloqueado(contato(NOME,X))), !,
-	apagaContato(NOME),
-	adicionaContato(NOME,X),
+desbloquearContato(NOME,NUMERO):-
+	call(bloqueado(contato(NOME,NUMERO))), !,
+	retract(bloqueado(contato(NOME,NUMERO))),
+	assertz(contato(NOME,NUMERO)),
 	write("Contato desbloqueado!"), nl, nl,
 	executaMenu(), nl;
 
@@ -281,8 +308,6 @@ verificaFavorito(Nome,5):-call(favorito(contato(Nome,_))), !;contato(Nome,X),
 
 exibeContatoss([]).
 exibeContatoss([Head|Tail]):-
-
-
 	write(Head),nl,
 	
 	exibeContatos(Tail).
