@@ -73,6 +73,7 @@ sw(8):-
 	verificaContato(NOMEANTIGO),
 	alteraContato(NOMEANTIGO),
 	executaMenu().
+
 sw(9):-
 	write("Nome: "), read(NOME), nl,
 	verificaContato(NOME),
@@ -93,7 +94,7 @@ sw(11):-
 	listarContatos(L).
 
 sw(12):-
-		write('*:･ﾟ✧*:･ﾟ✧ (ღ˘⌣˘ღ)  Contatos favoritos  (ღ˘⌣˘ღ) *:･ﾟ✧*:･ﾟ✧'),nl,nl,
+	write('*:･ﾟ✧*:･ﾟ✧ (ღ˘⌣˘ღ)  Contatos favoritos  (ღ˘⌣˘ღ) *:･ﾟ✧*:･ﾟ✧'),nl,nl,
 	findall(X, (favorito(X)), L),
 	listarContatos(L).
 sw(13):-
@@ -170,7 +171,7 @@ subMenuAlteraContato(1,NomeAntigo):-
 	chamar(contato(NomeAntigo,_),CHAMADAS),
 	retract(chamar(contato(NomeAntigo,_),_)),
 
-	apagaContato(NomeAntigo),
+	apagaContato(NomeAntigo,X),
 	adicionaContato(NovoNome, X,CHAMADAS),
 	write("Nome alterado com sucesso!"),nl,nl.
 	
@@ -178,8 +179,10 @@ subMenuAlteraContato(1,NomeAntigo):-
 subMenuAlteraContato(2,NomeAntigo):- 
 	write("digite o novo número:"),
 	read(NovoNumero),nl,
-	apagaContato(NomeAntigo),
+
+	apagaContato(NomeAntigo,X),
 	assertz(contato(NomeAntigo,NovoNumero)),
+
 	write("Numero alterado com sucesso!"),nl,nl.
 	
 subMenuAlteraContato(3,NomeAntigo):- 
@@ -187,12 +190,14 @@ subMenuAlteraContato(3,NomeAntigo):-
 	read(NovoNome),nl,
 	write("digite o novo número:"),
 	read(NovoNumero),nl,
+
 	contato(NomeAntigo,_),
 	chamar(contato(NomeAntigo,_),CHAMADAS),
 	retract(chamar(contato(NomeAntigo,_),_)),
 	alteraBloqueado(NomeAntigo,NovoNome,NovoNumero),
-	apagaContato(NomeAntigo),
+	apagaContato(NomeAntigo,X),
 	adicionaContato(NovoNome, NovoNumero,CHAMADAS),
+
 	write("Nome e número alterados com sucesso!"),nl,nl.
 
 alteraBloqueado(Nome,NovoNome,Numero):-
