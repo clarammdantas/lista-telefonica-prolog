@@ -83,7 +83,9 @@ sw(9):-
 sw(10):-
 	write("Nome: "), read(NOME), nl,
 	verificaContato(NOME),
-	desbloquearContato(NOME).
+	exibirContatosNomeComum(NOME),
+	write('Digite o número para confirmar: '), read(NUMERO),
+	desbloquearContato(NOME, NUMERO).
 
 sw(11):-
 	write('*:･ﾟ✧*:･ﾟ✧ 	ψ(｀∇´)ψ  Contatos bloqueados  	ψ(｀∇´)ψ  *:･ﾟ✧*:･ﾟ✧'),nl,nl,
@@ -204,11 +206,15 @@ alteraBloqueado(Nome,NovoNome,Numero):-
 verificaContato(NOME):-
 	call(contato(NOME,_)), !;
 
+	call(bloqueado(contato(NOME,_))), !;
+
 	write("Contato nao existe!"), nl,nl,
 	executaMenu().
 
 exibirContatosNomeComum(NOME):-
-	forall(contato(NOME,Y), format('Nome: ~w~nNumero: ~w~n~n', [NOME,Y])).
+	forall(contato(NOME,Y), format('Nome: ~w~nNumero: ~w~n~n', [NOME,Y]));
+
+	forall(bloqueado(contato(NOME,Y)), format('Nome: ~w~nNumero: ~w~n~n', [NOME,Y])).
 
 %------------Adicionar um contato aos favoritos-----------------------------------------------------
 adicionarAosFavoritos(NOME):-
@@ -258,10 +264,10 @@ listarContatos([contato(X,Y)|Tail]):-
 
 %--------Desbloquear contato-------------------------------------------------
 
-desbloquearContato(NOME):-
-	call(bloqueado(contato(NOME,X))), !,
-	apagaContato(NOME),
-	adicionaContato(NOME,X),
+desbloquearContato(NOME,NUMERO):-
+	call(bloqueado(contato(NOME,NUMERO))), !,
+	retract(bloqueado(contato(NOME,NUMERO))),
+	assertz(contato(NOME,NUMERO)),
 	write("Contato desbloqueado!"), nl, nl,
 	executaMenu(), nl;
 
