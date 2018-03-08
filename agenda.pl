@@ -73,7 +73,7 @@ sw(8):-
 	write('Digite o nome do contato que deseja alterar: '),
 	read(NOMEANTIGO),nl,
 	verificaContato(NOMEANTIGO),
-	exibirContatosNomeComum(NOME),
+	exibirContatosNomeComum(NOMEANTIGO),
 	write('Digite o número para confirmar: '), read(NUMERO),
 	alteraContato(NOMEANTIGO, NUMERO),
 	executaMenu().
@@ -245,7 +245,7 @@ adicionarAosFavoritos(NOME,NUMERO):-
 removerFavorito(NOME,NUMERO):-
 	call(favorito(contato(NOME,NUMERO))), !,
 	apagaContato(NOME,NUMERO),
-	adicionaContato(NOME, NUMERO, CHAMADAS),
+	adicionaContato(NOME, NUMERO,_),
 	write("Contato removido da lista de favoritos!"),nl,nl,
 	executaMenu(), nl;
 
