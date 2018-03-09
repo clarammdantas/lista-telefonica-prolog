@@ -404,6 +404,7 @@ removeGrupo(NomeGrupo):-
 
 
 main:-
+fachada(),
 executaMenu(),
 halt(0).
 
